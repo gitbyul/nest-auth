@@ -8,7 +8,7 @@
   "scripts": {
     "preBuild": "rimraf dist",
     "build": "nest build",
-    "db:sync": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js schema:sync --dataSource src/config/db-source.ts",
+    "db:sync": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js schema:sync --dataSource src/config/db/db-source.ts",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "cross-env NODE_ENV=local nest start --watch",
