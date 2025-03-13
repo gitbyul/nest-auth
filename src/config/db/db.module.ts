@@ -6,12 +6,12 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 @Module({
   imports: [
-    ConfigModule, // ConfigModule 추가
+    ConfigModule,
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule], // ConfigService 사용을 위해 추가
-      inject: [ConfigService], // ConfigService 주입
+      imports: [ConfigModule],
+      inject: [ConfigService],
       useFactory: (configService: ConfigService): TypeOrmModuleOptions => ({
-        type: configService.get<DatabaseType>('DB_TYPE', 'mysql') as any, // ✅ 직접 적용
+        type: configService.get<DatabaseType>('DB_TYPE', 'mysql') as any,
         host: configService.get<string>('DB_HOST', '127.0.0.1'),
         port: configService.get<number>('DB_PORT', 3306),
         username: configService.get<string>('DB_USER', 'root'),
@@ -19,6 +19,7 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
         database: configService.get<string>('DB_SCHEMA', 'test_db'),
         synchronize: false,
         autoLoadEntities: true,
+        logging: true,
         namingStrategy: new SnakeNamingStrategy(),
         extra: {
           connectionLimit: configService.get<number>('DB_CON_POOL', 1),

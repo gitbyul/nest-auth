@@ -1,8 +1,13 @@
 import { z } from 'zod';
 
 export const envSchema = z.object({
+  // Server
   NODE_ENV: z.enum(['local', 'prod']),
   SERVER_PORT: z.string().transform(Number),
+  ENC_ALGORITHM: z.string(),
+  ENC_SECRETKEY: z.string(),
+  
+  // DB
   DB_CON_POOL: z.string().transform(Number),
   DB_TYPE: z.enum([
     'mysql',
