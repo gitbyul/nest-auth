@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
+import { DBModule } from 'src/config/db/db.module';
+import { EnvModule } from 'src/config/env/env.module';
+import { LogModule } from 'src/config/log/log.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { EnvModule } from 'src/config/env.module';
-import { DBModule } from 'src/config/db.module';
 
 @Module({
-  imports: [EnvModule, DBModule],
+  imports: [EnvModule, DBModule, LogModule],
   controllers: [AppController],
   providers: [AppService],
 })
