@@ -4,6 +4,7 @@ import { Logger } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
 import { setupSwagger } from './common/util/swagger.util';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
@@ -23,7 +24,9 @@ async function bootstrap() {
   };
 
   const app = await NestFactory.create(AppModule, { httpsOptions });
-  setupSwagger(app)
+  setupSwagger(app);
+
+  app.use(cookieParser());
   if (node === 'prod') {
     app.enableCors({
       allowedHeaders: 'Content-Type',
@@ -34,8 +37,6 @@ async function bootstrap() {
   } else {
     app.enableCors();
   }
-
-
 
   await app.listen(port, () => {
     logger.verbose(`Application is running env: ${node}`);
