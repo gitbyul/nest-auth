@@ -9,7 +9,10 @@ export class JwtUtil {
 
   constructor(private readonly configService: ConfigService) {
     this.secret = this.configService.get<string>('JWT_SECRET', '');
-    this.refreshSecret = this.configService.get<string>('JWT_REFRESH_SECRET', '');
+    this.refreshSecret = this.configService.get<string>(
+      'JWT_REFRESH_SECRET',
+      '',
+    );
   }
 
   // JWT 토큰 생성
@@ -18,7 +21,7 @@ export class JwtUtil {
       expiresIn: '15m',
     });
 
-    return `Bearer ${token}`
+    return `Bearer ${token}`;
   }
 
   async generateRefreshToken(payload: any): Promise<string> {
@@ -34,5 +37,14 @@ export class JwtUtil {
     } catch (error) {
       throw new Error('Invalid Token');
     }
+  }
+
+  async getJwtPayload(token: string) {
+    return jwt.decode(token) as jwt.JwtPayload;
+  }
+
+  async getJwtVerifyPayload(token: string, type: 'ACT' | 'RCT') {
+    let key = type === 'ACT' ? this.secret : this.refreshSecret;
+    return jwt.verify(token, key) as jwt.JwtPayload;
   }
 }

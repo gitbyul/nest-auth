@@ -1,0 +1,20 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "D:\\devbyul\\nest-auth\\log\\.d83097a3ab3272a0cfd524c446cdeb9abd05597e-audit.json",
+    "files": [
+        {
+            "date": 1741842461802,
+            "name": "D:\\devbyul\\nest-auth\\log\\2025-03-13_api.log",
+            "hash": "a730ac61a3fac43fc411bf55ac2234e4aae2a4399bc770c99b9d6d6700d3c87d"
+        },
+        {
+            "date": 1741910587553,
+            "name": "D:\\devbyul\\nest-auth\\log\\2025-03-14_api.log",
+            "hash": "bcd162ae4950658817cf06cbd7e4a1069a1ffcb68bcaf39a956113b81c6987aa"
+        }
+    ],
+    "hashType": "sha256"
+}

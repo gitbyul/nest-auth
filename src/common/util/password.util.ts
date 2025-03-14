@@ -8,38 +8,46 @@ export class PasswordUtil {
   public isValid(password: string) {
     // 패스워드 Null 검사
     if (password == null) {
+      console.log("패스워드 Null 검사 Fail!")
       return false;
     }
 
     // 길이 검사
     if (!this.isLengthValid(password)) {
+      console.log("길이 검사 Fail!")
       return false;
     }
 
     // 공백 검사
     if (this.containsWhitespace(password)) {
+      console.log("공백 검사 Fail!")
       return false;
     }
 
     // 연속된 동일 문자 3개 이상 금지
     if (this.hasConsecutiveRepeatedChars(password, 3)) {
+      console.log("연속된 동일 문자 3개 이상 금지 Fail!")
       return false;
     }
 
     // 대소문자, 숫자, 특수문자 각각의 존재 여부 검사
     if (!this.hasMinimumThreeCharacterCategories(password)) {
+      console.log("대소문자, 숫자, 특수문자 각각의 존재 여부 검사 Fail!")
       return false;
     }
 
     // 비밀번호에 이메일이나 이름이 포함되었는지 확인
     if (this.isPasswordContainsEmailOrName(password)) {
+      console.log("비밀번호에 이메일이나 이름이 포함되었는지 확인 Fail!")
       return false;
     }
 
     // 사용자 이름, ID 금지 검사
-    if (this.containsForbiddenUsernames(password)) {
-      return false;
-    }
+    // TODO: 해당 부분 로직 수정 필요
+    // if (this.containsForbiddenUsernames(password)) {
+    //   console.log("사용자 이름, ID 금지 검사 Fail!")
+    //   return false;
+    // }
 
     return true;
   }

@@ -27,4 +27,14 @@ export class UsersEntityDto {
   @IsOptional()
   @ApiProperty({ description: 'Update Request Ip(Encrypt)' })
   lastLoginIp?: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({ description: 'Update Request Ip(Encrypt)' })
+  lastLogoutIp?: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({ description: 'User Refresh Token' })
+  refreshToken?: string;
 }

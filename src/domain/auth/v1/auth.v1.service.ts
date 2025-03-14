@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { BCryptUtil } from 'src/common/util/bcrypt.util';
-import { EncryptUtil } from 'src/common/util/encrypt.util';
+import { JwtUtil } from 'src/common/util/jwt.util';
+import { PasswordUtil } from 'src/common/util/password.util';
+import { RedisService } from 'src/domain/redis/v1/redis.v1.service';
 import { UsersEntityDto } from 'src/domain/user/users.dto';
 import { Users } from 'src/domain/user/users.entity';
 import { UsersService } from 'src/domain/user/users.service';
 import { ReqUserLoginDto } from './dto/req.user.login.dto';
 import { ReqUserSaveDto } from './dto/req.user.save.dto';
-import { PasswordUtil } from 'src/common/util/password.util';
-import { JwtUtil } from 'src/common/util/jwt.util';
+import { AuthRedisKey } from './enums/auth.redis.enum';
 
 @Injectable()
 export class AuthV1Service {
@@ -16,6 +17,7 @@ export class AuthV1Service {
     private readonly passwordEncoder: BCryptUtil,
     private readonly passwordUtil: PasswordUtil,
     private readonly jwtUtil: JwtUtil,
+    private readonly redisService: RedisService,
   ) {}
   getHello(): string {
     return 'Hello AuthV1Controller';
@@ -77,8 +79,37 @@ export class AuthV1Service {
     const accessToken = await this.jwtUtil.generateAccessToken(jwtPayload);
     const refreshToken = await this.jwtUtil.generateRefreshToken(jwtPayload);
 
+    entity.refreshToken = refreshToken;
     await this.usersService.loginUpdate(entity, requestIp);
 
     return { accessToken, refreshToken };
+  }
+
+  async logout(accessToken: string, refreshToken: string, requestIp: string) {
+    if (accessToken) {
+      const payload = await this.jwtUtil.getJwtPayload(accessToken);
+      const { exp } = payload;
+      let ttl = 0;
+      if (exp) {
+        const now = Math.floor(Date.now() / 1000);
+        ttl = exp - now;
+      }
+
+      await this.redisService.set(
+        AuthRedisKey.LOG_OUT,
+        [accessToken],
+        null,
+        ttl,
+      );
+    }
+
+    if (refreshToken) {
+      const entity = await this.usersService.findByRefreshToken(refreshToken);
+      if (entity) {
+        entity.lastLogoutAt = new Date();
+        entity.lastLogoutIp = requestIp;
+        entity.refreshToken = null;
+      }
+    }
   }
 }

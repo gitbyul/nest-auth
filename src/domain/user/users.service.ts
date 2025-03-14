@@ -17,12 +17,20 @@ export class UsersService {
     return await this.usersRepository.findByEmail(email);
   }
 
+  async findByRefreshToken(refreshToken: string) {
+    return await this.usersRepository.findByRefreshToken(refreshToken);
+  }
+
   async findOneOrFail(email: string) {
     return await this.usersRepository.findOneOrFail(email);
   }
 
   async existsByEmail(email: string): Promise<boolean> {
     return await this.usersRepository.existsByEmail(email);
+  }
+
+  async save(entity: Users) {
+    return await this.usersRepository.save(entity);
   }
 
   async createUserEntity(dto: UsersEntityDto): Promise<Users> {
@@ -34,10 +42,6 @@ export class UsersService {
     };
 
     return this.usersRepository.createUserEntity(encryptDto);
-  }
-
-  async save(entity: Users) {
-    return await this.usersRepository.save(entity);
   }
 
   async loginUpdate(entity: Users, requestIp: string) {
