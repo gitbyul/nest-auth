@@ -9,8 +9,7 @@ interface IResponseCookie {
 }
 
 interface IResponseBody {
-  message: string;
-  data: any;
+  [key: string]: any;
 }
 
 interface IResponse {
