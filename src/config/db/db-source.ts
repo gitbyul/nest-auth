@@ -7,7 +7,7 @@ export const AppDataSource = new DataSource({
   port: 3306,
   username: 'root',
   password: 'root',
-  database: 'dev_auth',
+  database: 'developer',
   synchronize: false,
   entities: ['dist/**/*.entity{.ts,.js}'], // 엔티티 파일 경로 설정
   namingStrategy: new SnakeNamingStrategy(),

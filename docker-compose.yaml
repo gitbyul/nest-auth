@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  mysql:
+    container_name: mysql8.0.35_nestjs
+    image: mysql:8.0.35
+    restart: always
+    volumes:
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=developer
+      - MYSQL_USER=developer
+      - MYSQL_PASSWORD=developer
+      - TZ=Asia/Seoul
+
+  redis:
+    container_name: redis7.4_nestjs
+    image: redis:7.4
+    restart: always
+    ports:
+      - "6379:6379"
+    labels:
+      - "name=redis"
+      - "mode=standalone"
+    # volumes:
+    #   - ./docker/redis/conf:/usr/local/etc/redis
+    #   - ./docker/redis/data:/data
+    command: redis-server
+    # command: redis-server /usr/local/etc/redis/redis.conf
