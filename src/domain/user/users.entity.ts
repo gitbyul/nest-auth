@@ -41,6 +41,15 @@ export class Users {
   @Column({ type: 'varchar', length: 100, nullable: true })
   lastLoginIp: string;
 
+  @Column({ type: 'timestamp', nullable: true })
+  lastLogoutAt: Date;
+
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  lastLogoutIp: string;
+
+  @Column({ type: 'varchar', length: 200, nullable: true })
+  refreshToken: string;
+
   toEntity(entity: UsersEntityDto): Users {
     return this.usersRepository.createUserEntity(entity);
   }
