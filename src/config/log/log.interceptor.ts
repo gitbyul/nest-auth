@@ -2,19 +2,15 @@ import {
   CallHandler,
   ExecutionContext,
   Injectable,
-  NestInterceptor
+  NestInterceptor,
 } from '@nestjs/common';
 import * as _ from 'lodash';
 import { Observable, tap } from 'rxjs';
 import { LogUtil } from 'src/config/log/log.util';
-import { JsonUtil } from '../../common/util/json.util';
 
 @Injectable()
 export class LogInterceptor implements NestInterceptor {
-  constructor(
-    private readonly logger: LogUtil,
-    private readonly JSON: JsonUtil,
-  ) {}
+  constructor(private readonly logger: LogUtil) {}
 
   intercept(
     context: ExecutionContext,
@@ -30,17 +26,15 @@ export class LogInterceptor implements NestInterceptor {
     logParam.body = _.cloneDeep(body);
 
     this.logger.info(
-      `[Request][${method}][${url}][${className}][${handlerName}]=>${this.JSON.stringify(logParam)}`,
+      `[Request][${method}][${url}][${className}][${handlerName}]=>${JSON.stringify(logParam)}`,
     );
 
-    return next
-      .handle()
-      .pipe(
-        tap((data) =>
-          this.logger.info(
-            `[Response][${className}][${handlerName}]=>${this.JSON.stringify(data)}`,
-          ),
-        ),
-      );
+    return next.handle().pipe(
+      tap((data) => {
+        this.logger.info(
+          `[Response][${className}][${handlerName}]=>${JSON.stringify(data)}`,
+        );
+      }),
+    );
   }
 }
