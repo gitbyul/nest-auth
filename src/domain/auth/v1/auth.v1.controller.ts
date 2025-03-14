@@ -1,10 +1,18 @@
-import { Controller, Get, Ip, Post, Body, Res, HttpCode } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Ip,
+  Post
+} from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
-import { AuthV1Service } from './auth.v1.service';
-import { ReqUserSaveDto } from './dto/req.user.save.dto';
-import { ReqUserLoginDto } from './dto/req.user.login.dto';
-import { Response } from 'express';
 import { ResponseEntity } from 'src/common/entity/response.entity';
+import { AuthV1Service } from './auth.v1.service';
+import { ReqUserLoginDto } from './dto/req.user.login.dto';
+import { ReqUserSaveDto } from './dto/req.user.save.dto';
+import { AuthCookies } from './enums/auth.cookies.enum';
+import { AuthHeaders } from './enums/auth.headers.enum';
 
 @Controller('api/v1/auth')
 export class AuthV1Controller {
@@ -41,18 +49,18 @@ export class AuthV1Controller {
       requestIp,
     );
 
+    const headers = {
+      [AuthHeaders.ACCESS_TOKEN]: accessToken,
+    };
+
     const cookie = {
-      access_token: {
-        val: accessToken,
-        cookieOptions: { maxAge: 15 * 60 * 1000 },
-      },
-      refresh_token: {
+      [AuthCookies.REFRESH_TOKEN]: {
         val: refreshToken,
         cookieOptions: { maxAge: 7 * 24 * 60 * 60 * 1000 },
       },
     };
 
-    return ResponseEntity.of(null, cookie, null);
+    return ResponseEntity.of(headers, cookie, null);
   }
 
   @Post('/logout')

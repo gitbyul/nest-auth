@@ -14,9 +14,11 @@ export class JwtUtil {
 
   // JWT 토큰 생성
   async generateAccessToken(payload: any): Promise<string> {
-    return jwt.sign(payload, this.secret, {
+    const token = jwt.sign(payload, this.secret, {
       expiresIn: '15m',
     });
+
+    return `Bearer ${token}`
   }
 
   async generateRefreshToken(payload: any): Promise<string> {
