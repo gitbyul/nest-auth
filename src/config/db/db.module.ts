@@ -16,7 +16,7 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
         port: configService.get<number>('DB_PORT', 3306),
         username: configService.get<string>('DB_USER', 'root'),
         password: configService.get<string>('DB_PASSWORD', 'root'),
-        database: configService.get<string>('DB_SCHEMA', 'test_db'),
+        database: configService.get<string>('DB_SCHEMA', 'developer'),
         synchronize: false,
         autoLoadEntities: true,
         logging: true,
