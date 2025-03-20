@@ -36,19 +36,19 @@ export class Users {
   updatedIp: string;
 
   @Column({ type: 'timestamp', nullable: true })
-  lastLoginAt: Date;
+  lastLoginAt: Date | null;
 
   @Column({ type: 'varchar', length: 100, nullable: true })
-  lastLoginIp: string;
+  lastLoginIp: string | null;
 
   @Column({ type: 'timestamp', nullable: true })
-  lastLogoutAt: Date;
+  lastLogoutAt: Date | null;
 
   @Column({ type: 'varchar', length: 100, nullable: true })
-  lastLogoutIp: string;
+  lastLogoutIp: string | null;
 
   @Column({ type: 'varchar', length: 200, nullable: true })
-  refreshToken: string;
+  refreshToken: string | null;
 
   toEntity(entity: UsersEntityDto): Users {
     return this.usersRepository.createUserEntity(entity);
