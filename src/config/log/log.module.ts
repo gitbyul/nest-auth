@@ -42,5 +42,6 @@ import { LogInterceptor } from './log.interceptor';
     CommonModule,
   ],
   providers: [{ provide: APP_INTERCEPTOR, useClass: LogInterceptor }, LogUtil],
+  exports: [LogUtil],
 })
 export class LogModule {}
