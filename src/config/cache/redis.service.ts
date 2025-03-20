@@ -10,7 +10,8 @@ export class RedisService {
   ) {}
 
   makeKey(type: string, keys: string[]) {
-    return `${type}${keys.join('::')}`;
+    const key = [type, ...keys]
+    return `${key.join('::')}`;
   }
 
   async save(key: string, value: string, ttl: number) {
@@ -28,6 +29,16 @@ export class RedisService {
       const value = await this.cacheManager.get(key);
       this.Logger.debug(`[Redis][GET] ${key}:${value}`);
       return value;
+    } catch (error) {
+      this.Logger.error(`[Redis][ERROR] ${error.message}`);
+      return null;
+    }
+  }
+
+  async del(key:string) {
+    try {
+      await this.cacheManager.del(key);
+      this.Logger.debug(`[Redis][DEL] ${key}`);
     } catch (error) {
       this.Logger.error(`[Redis][ERROR] ${error.message}`);
       return null;
