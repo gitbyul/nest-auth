@@ -6,8 +6,10 @@ export const envSchema = z.object({
   SERVER_PORT: z.string().transform(Number),
   ENC_ALGORITHM: z.string(),
   ENC_SECRETKEY: z.string(),
-  JWT_SECRET: z.string(),
+  JWT_ACCESS_SECRET: z.string(),
+  JWT_ACCESS_EXPIRES: z.string().transform(Number),
   JWT_REFRESH_SECRET: z.string(),
+  JWT_REFRESH_EXPIRES: z.string().transform(Number),
 
   // DB
   DB_CON_POOL: z.string().transform(Number),
