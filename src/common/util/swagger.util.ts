@@ -17,7 +17,7 @@ export function setupSwagger(app: INestApplication): void {
         scheme: 'bearer',
         in: 'header',
       },
-      'access-token',
+      'Authorization',
     )
     .build();
 
