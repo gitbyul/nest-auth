@@ -14,6 +14,10 @@ export class UsersRepository {
     return await this.usersRepository.findOne({ where: { email } });
   }
 
+  async findByRefreshToken(refreshToken: string) {
+    return await this.usersRepository.findOne({ where: { refreshToken } });
+  }
+
   async findOneOrFail(email: string) {
     return await this.usersRepository.findOneOrFail({ where: { email } });
   }
