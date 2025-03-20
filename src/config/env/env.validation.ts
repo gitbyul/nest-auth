@@ -38,6 +38,16 @@ export const envSchema = z.object({
   DB_USER: z.string(),
   DB_PASSWORD: z.string(),
   DB_CRYPTO_KEY: z.string(),
+
+  // Redis
+  REDIS_HOST: z.string(),
+  REDIS_PORT: z.string().transform(Number),
+  REDIS_USER: z.string(),
+  REDIS_PASSWORD: z.string(),
+  REDIS_DEFULT_TTL: z.string().transform(Number),
+  REDIS_LRU_SIZE: z.string().transform(Number),
+  REDIS_DEEP_CLONE: z.string().transform(Boolean),
+  REDIS_CHECK_INTERVAL: z.string().transform(Number),
 });
 
 export type EnvVariables = z.infer<typeof envSchema>;
