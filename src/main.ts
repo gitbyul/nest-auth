@@ -11,6 +11,9 @@ async function bootstrap() {
   const port = process.env.PORT ?? 3000;
   const node = process.env.NODE_ENV;
   const db_host = process.env.DB_HOST;
+  const db_port = process.env.DB_PORT;
+  const redis_host = process.env.REDIS_HOST;
+  const redis_port = process.env.REDIS_PORT;
   const httpsOptions = {
     key:
       process.env.NODE_ENV != 'local'
@@ -29,10 +32,11 @@ async function bootstrap() {
   app.use(cookieParser());
   if (node === 'prod') {
     app.enableCors({
-      allowedHeaders: 'Content-Type',
+      allowedHeaders: 'Content-Type, Accept, Origin',
       methods: 'GET,PUT,POST,PATCH,DELETE,OPTIONS',
       credentials: true,
       origin: true,
+      preflightContinue: false,
     });
   } else {
     app.enableCors();
@@ -41,7 +45,8 @@ async function bootstrap() {
   await app.listen(port, () => {
     logger.verbose(`Application is running env: ${node}`);
     logger.verbose(`Application is running url: http://localhost:${port}`);
-    logger.verbose(`Database is running host: ${db_host}`);
+    logger.verbose(`Database is running host: ${db_host}:${db_port}`);
+    logger.verbose(`Redis is running host: ${redis_host}:${redis_port}`);
   });
 }
 bootstrap();
