@@ -1,12 +1,6 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  Ip,
-  Post
-} from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post, Req } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
+import { RealIp } from 'nestjs-real-ip';
 import { ResponseEntity } from 'src/common/entity/response.entity';
 import { AuthV1Service } from './auth.v1.service';
 import { ReqUserLoginDto } from './dto/req.user.login.dto';
@@ -28,7 +22,7 @@ export class AuthV1Controller {
   @ApiOperation({ summary: '회원가입', description: '고객 회원가입' })
   async save(
     @Body() dto: ReqUserSaveDto,
-    @Ip() requestIp: string,
+    @RealIp() requestIp: string,
   ): Promise<any> {
     const body = {
       userIdx: await this.authV1Service.save(dto, requestIp),
@@ -42,7 +36,7 @@ export class AuthV1Controller {
   @ApiOperation({ summary: '로그인', description: '고객 로그인' })
   async login(
     @Body() dto: ReqUserLoginDto,
-    @Ip() requestIp: string,
+    @RealIp() requestIp: string,
   ): Promise<any> {
     const { accessToken, refreshToken } = await this.authV1Service.login(
       dto,
@@ -66,13 +60,14 @@ export class AuthV1Controller {
   @Post('/logout')
   @HttpCode(200)
   @ApiOperation({ summary: '로그아웃', description: '고객 로그아웃' })
-  async logout(@Ip() requestIp: string): Promise<any> {
+  async logout(@Req() request, @RealIp() requestIp: string): Promise<any> {
+    const accessToken = request.headers.authorization?.split(' ')[1];
+    const refreshToken = request.cookies[AuthCookies.REFRESH_TOKEN];
+    console.log(requestIp)
+    await this.authV1Service.logout(accessToken, refreshToken, requestIp);
+
     const cookie = {
-      access_token: {
-        val: '',
-        cookieOptions: { maxAge: 0 },
-      },
-      refresh_token: {
+      [AuthCookies.REFRESH_TOKEN]: {
         val: '',
         cookieOptions: { maxAge: 0 },
       },
