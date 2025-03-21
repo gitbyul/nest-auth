@@ -76,24 +76,30 @@ export class AuthV1Service {
     }
 
     const jwtPayload = { id: entity.id, email, nickname: entity.nickname };
-    const { token: accessToken, exp } =
-      await this.jwtUtil.generateAccessToken(jwtPayload);
+    const accessToken = await this.jwtUtil.generateAccessToken(jwtPayload);
     const refreshToken = await this.jwtUtil.generateRefreshToken(jwtPayload);
 
-    const key = this.redisService.makeKey(RedisKey.AUTH, [accessToken]);
-    const value = requestIp;
-    await this.redisService.save(key, value, exp);
+    const { exp } = await this.jwtUtil.getJwtPayload(accessToken);
+    const ttl = exp ? exp * 1000 - new Date().getTime() : new Date().getTime();
+    const key = this.redisService.makeKey(RedisKey.AUTH, [email]);
+    const value = accessToken;
+    await this.redisService.save(key, value, ttl);
 
     entity.refreshToken = refreshToken;
     await this.usersService.loginUpdate(entity, requestIp);
 
-    return { accessToken, refreshToken };
+    return { accessToken: `Bearer ${accessToken}`, refreshToken };
   }
 
   async logout(accessToken: string, refreshToken: string, requestIp: string) {
-    const key = this.redisService.makeKey(RedisKey.AUTH, [accessToken]);
-    await this.redisService.del(key);
-    
+    const { email } = await this.jwtUtil.getJwtPayload(accessToken);
+    const key = this.redisService.makeKey(RedisKey.AUTH, [email]);
+    const cacheAccessToken = await this.redisService.get(key);
+
+    if (accessToken === cacheAccessToken) {
+      await this.redisService.del(key);
+    }
+
     const entity = await this.usersService.findByRefreshToken(refreshToken);
     if (entity) {
       entity.lastLogoutAt = new Date();

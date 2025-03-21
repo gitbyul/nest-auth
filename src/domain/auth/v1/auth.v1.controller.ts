@@ -1,5 +1,6 @@
 import { Body, Controller, Get, HttpCode, Post, Req } from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { Request } from 'express';
 import { RealIp } from 'nestjs-real-ip';
 import { ResponseEntity } from 'src/common/entity/response.entity';
 import { AuthV1Service } from './auth.v1.service';
@@ -59,11 +60,15 @@ export class AuthV1Controller {
 
   @Post('/logout')
   @HttpCode(200)
+  @ApiBearerAuth()
   @ApiOperation({ summary: '로그아웃', description: '고객 로그아웃' })
-  async logout(@Req() request, @RealIp() requestIp: string): Promise<any> {
-    const accessToken = request.headers.authorization?.split(' ')[1];
+  async logout(
+    @Req() request: Request,
+    @RealIp() requestIp: string,
+  ): Promise<any> {
+    const accessToken = request.headers.authorization?.split(' ')[1] as string;
     const refreshToken = request.cookies[AuthCookies.REFRESH_TOKEN];
-    console.log(requestIp)
+    
     await this.authV1Service.logout(accessToken, refreshToken, requestIp);
 
     const cookie = {

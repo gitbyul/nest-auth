@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as jwt from 'jsonwebtoken';
+import { JWT_TYPE } from '../enums/jwt.enum';
 
 @Injectable()
 export class JwtUtil {
@@ -30,11 +31,9 @@ export class JwtUtil {
 
   // JWT 토큰 생성
   async generateAccessToken(payload: any) {
-    const token = jwt.sign(payload, this.accessSecret, {
+    return jwt.sign(payload, this.accessSecret, {
       expiresIn: this.accessExpires,
     });
-
-    return { token: `Bearer ${token}`, exp: this.accessExpires };
   }
 
   async generateRefreshToken(payload: any) {
@@ -52,13 +51,18 @@ export class JwtUtil {
     }
   }
 
-  async getJwtPayload(BearerToken: string) {
+  async getJwtPayload(token: string) {
+    return jwt.decode(token) as jwt.JwtPayload;
+  }
+
+  async getBearerJwtPayload(BearerToken: string) {
     const token = BearerToken.split(' ')[1];
     return jwt.decode(token) as jwt.JwtPayload;
   }
 
-  async getJwtVerifyPayload(token: string, type: 'ACT' | 'RCT') {
-    let key = type === 'ACT' ? this.accessSecret : this.refreshSecret;
+  async getJwtVerifyPayload(type: JWT_TYPE, token: string) {
+    const key =
+      type === JWT_TYPE.ACCESS_TOKEN ? this.accessSecret : this.refreshSecret;
     return jwt.verify(token, key) as jwt.JwtPayload;
   }
 }

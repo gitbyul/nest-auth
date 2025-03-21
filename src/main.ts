@@ -1,10 +1,10 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './domain/app/app.module';
 import { Logger } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
+import * as cookieParser from 'cookie-parser';
 import * as fs from 'fs';
 import * as path from 'path';
 import { setupSwagger } from './common/util/swagger.util';
-import * as cookieParser from 'cookie-parser';
+import { AppModule } from './domain/app/app.module';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
@@ -29,18 +29,14 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, { httpsOptions });
   setupSwagger(app);
 
+  app.enableCors({
+    allowedHeaders: ['Authorization', 'Content-Type', 'Accept', 'Origin'],
+    methods: 'GET,PUT,POST,PATCH,DELETE,OPTIONS',
+    credentials: true,
+    origin: true,
+    preflightContinue: false,
+  });
   app.use(cookieParser());
-  if (node === 'prod') {
-    app.enableCors({
-      allowedHeaders: 'Content-Type, Accept, Origin',
-      methods: 'GET,PUT,POST,PATCH,DELETE,OPTIONS',
-      credentials: true,
-      origin: true,
-      preflightContinue: false,
-    });
-  } else {
-    app.enableCors();
-  }
 
   await app.listen(port, () => {
     logger.verbose(`Application is running env: ${node}`);

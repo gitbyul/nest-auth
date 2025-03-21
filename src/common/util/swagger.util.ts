@@ -10,15 +10,7 @@ export function setupSwagger(app: INestApplication): void {
     .setTitle('API Docs')
     .setDescription('NestJS API description')
     .setVersion('0.0.1')
-    .addBearerAuth(
-      {
-        type: 'http',
-        name: 'JWT',
-        scheme: 'bearer',
-        in: 'header',
-      },
-      'Authorization',
-    )
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
