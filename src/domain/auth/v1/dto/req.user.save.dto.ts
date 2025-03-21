@@ -11,6 +11,6 @@ export class ReqUserSaveDto {
   nickname: string;
 
   @IsString()
-  @ApiProperty({ description: 'User Password', example: 'test1234!@#$' })
+  @ApiProperty({ description: 'User Password', example: 'ABCabc123!@#' })
   password: string;
 }
