@@ -14,9 +14,19 @@ export class RedisService {
     return `${key.join('::')}`;
   }
 
+  async set(key: string, value: string) {
+    try {
+      this.Logger.debug(`[Redis][SET][TTL -1] ${key}=${value}`);
+      return await this.cacheManager.set(key, value);
+    } catch (error) {
+      this.Logger.error(`[Redis][ERROR] ${error.message}`);
+      return null;
+    }
+  }
+  
   async save(key: string, value: string, ttl: number) {
     try {
-      this.Logger.debug(`[Redis][SET]${key}:${value}`);
+      this.Logger.debug(`[Redis][SET][TTL ${ttl / 1000}s] ${key}=${value}`);
       return await this.cacheManager.set(key, value, ttl);
     } catch (error) {
       this.Logger.error(`[Redis][ERROR] ${error.message}`);
