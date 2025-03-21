@@ -20,12 +20,13 @@ services:
     image: redis:7.4
     restart: always
     ports:
-      - "6379:6379"
+      - "16379:6379"
     labels:
       - "name=redis"
       - "mode=standalone"
-    # volumes:
-    #   - ./docker/redis/conf:/usr/local/etc/redis
+    volumes:
+      - ./docker/redis/conf:/usr/local/etc/redis
+      - ./docker/redis/logs:/var/log/redis
     #   - ./docker/redis/data:/data
-    command: redis-server
-    # command: redis-server /usr/local/etc/redis/redis.conf
+    # command: redis-server
+    command: redis-server /usr/local/etc/redis/redis.conf
